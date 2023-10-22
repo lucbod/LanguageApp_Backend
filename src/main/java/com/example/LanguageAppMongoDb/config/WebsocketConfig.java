@@ -19,6 +19,9 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
     }
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        /* before going to production, secure it more by adding your frontend link:
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("https://yourdomain.com").withSockJS();*/
+
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
 
     }
