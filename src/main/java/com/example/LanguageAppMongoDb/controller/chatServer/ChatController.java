@@ -39,6 +39,5 @@ public class ChatController {
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(),"/private", message); // /user/David/private
         return message;
     }
-
 }
 
