@@ -12,4 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
     private String email;
     private String password;
+
+    private boolean verified;
 }
