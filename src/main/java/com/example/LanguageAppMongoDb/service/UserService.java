@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -102,4 +103,7 @@ public class UserService {
         return false; // Verification failed
     }
 
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 }
