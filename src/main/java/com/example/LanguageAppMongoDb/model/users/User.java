@@ -38,8 +38,8 @@ public class User implements UserDetails {
     private String id;
     private String email;
     private String password;
-
-    private boolean verified;
+    @Builder.Default
+    private boolean verified = true;
     private String firstname;
     private String lastname;
     private Role role;
