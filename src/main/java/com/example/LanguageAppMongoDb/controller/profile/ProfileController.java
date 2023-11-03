@@ -1,11 +1,15 @@
 package com.example.LanguageAppMongoDb.controller.profile;
 
+import com.example.LanguageAppMongoDb.model.profile.Profile;
+import com.example.LanguageAppMongoDb.model.users.User;
 import com.example.LanguageAppMongoDb.resource.ProfileRequest;
 import com.example.LanguageAppMongoDb.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -35,4 +39,8 @@ public class ProfileController {
         return ResponseEntity.ok("Profile created successfully");
     }
 
+    @GetMapping
+    public List<Profile> getAllProfiles() {
+        return profileService.getAllProfiles();
+    }
 }

@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 @Service
 public class ProfileService {
@@ -76,5 +77,8 @@ public class ProfileService {
             // Handle the exception appropriately
         }
         return userId + "_" + file.getOriginalFilename();
+    }
+    public List<Profile> getAllProfiles() {
+        return profileRepository.findAll();
     }
 }
