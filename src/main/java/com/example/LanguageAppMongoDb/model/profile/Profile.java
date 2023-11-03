@@ -8,10 +8,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Document("profile")
+@Builder(toBuilder = true)
 public class Profile {
     @Id
     private String id;
@@ -20,5 +20,5 @@ public class Profile {
     private String languageToLearn;
     private String about;
     private String email;
-
+    private String imagePath;
 }
