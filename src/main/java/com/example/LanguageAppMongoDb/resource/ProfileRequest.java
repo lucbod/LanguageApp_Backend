@@ -19,6 +19,9 @@ public class ProfileRequest {
     private MultipartFile image;
     private String imagePath;
 
+    private String imageUrl;
+
+
     public static ProfileRequestBuilder customBuilder() {
         return new ProfileRequestBuilder();
     }
@@ -32,11 +35,18 @@ public class ProfileRequest {
         private MultipartFile image;
         private String imagePath;
 
+        private String imageUrl;
+
         ProfileRequestBuilder() {
         }
 
         public ProfileRequestBuilder name(String name) {
             this.name = name;
+            return this;
+        }
+
+        public ProfileRequestBuilder imageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
             return this;
         }
 
@@ -48,7 +58,7 @@ public class ProfileRequest {
         }
 
         public ProfileRequest build() {
-            return new ProfileRequest(name, nativeLanguage, languageToLearn, about, email, image, imagePath);
+            return new ProfileRequest(name, nativeLanguage, languageToLearn, about, email, image, imagePath, imageUrl);
         }
     }
 }

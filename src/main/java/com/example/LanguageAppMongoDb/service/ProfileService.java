@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProfileService {
@@ -65,9 +66,11 @@ public class ProfileService {
 
         // Generate a unique filename (you might want to use user ID or something)
         String fileName = userId + "_" + file.getOriginalFilename();
+//        System.out.println("filename" + fileName);
 
         // Create the Path for the file
         Path filePath = uploadPath.resolve(fileName);
+//        System.out.println("filepath" + filePath);
 
         try {
             // Save the file to the specified path
@@ -80,5 +83,34 @@ public class ProfileService {
     }
     public List<Profile> getAllProfiles() {
         return profileRepository.findAll();
+    }
+
+    public byte[] getImageBytes(String profileId) {
+        Optional<Profile> optionalProfile = profileRepository.findById(profileId);
+        if (optionalProfile.isPresent()) {
+            Profile profile = optionalProfile.get();
+            String imagePath = profile.getImagePath();
+            // Assuming images are stored in the "src/main/resources/static" directory
+            Path imagePathInStaticFolder = Paths.get("src/main/resources/static", imagePath);
+            try {
+                return Files.readAllBytes(imagePathInStaticFolder);
+            } catch (IOException e) {
+                e.printStackTrace(); // Handle the exception based on your needs
+            }
+        }
+        return null;
+    }
+
+    public String getImageUrl(Profile profile) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        String userId = user.getId();
+//        String userId = profile.getUserId();  // Replace with the actual method to get user ID
+
+        String fileName = userId + "_" + profile.getImagePath(); // Adjust as per your actual attributes
+        System.out.println("filename" + fileName);
+        return "/api/profile/image/" + fileName;
     }
 }
