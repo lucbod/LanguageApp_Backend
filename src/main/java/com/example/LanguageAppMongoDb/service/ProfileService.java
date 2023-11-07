@@ -49,7 +49,7 @@ public class ProfileService {
         String userId = user.getId();
 
         // Define the directory where you want to save the pictures
-        String uploadDir = "src/main/resources/static"; // Update this with your actual path
+        String uploadDir = "src/main/resources/static/images"; // Update this with your actual path
 
         // Create a Path representing the directory
         Path uploadPath = Paths.get(uploadDir);
@@ -108,9 +108,13 @@ public class ProfileService {
 
         String userId = user.getId();
 //        String userId = profile.getUserId();  // Replace with the actual method to get user ID
+        System.out.println("UserID is: " + userId);
 
-        String fileName = userId + "_" + profile.getImagePath(); // Adjust as per your actual attributes
-        System.out.println("filename" + fileName);
+//        String fileName = userId + "_" + profile.getImagePath(); // Adjust as per your actual attributes
+                String fileName = profile.getImagePath(); // Adjust as per your actual attributes
+        System.out.println("fileName is " + profile.getImagePath());
+
+        System.out.println("filename is" + fileName);
         return "/api/profile/image/" + fileName;
     }
 }

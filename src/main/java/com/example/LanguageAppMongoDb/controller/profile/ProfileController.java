@@ -5,6 +5,9 @@ import com.example.LanguageAppMongoDb.model.users.User;
 import com.example.LanguageAppMongoDb.resource.ProfileRequest;
 import com.example.LanguageAppMongoDb.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +27,9 @@ public class ProfileController {
 
     @Autowired
     private ProfileService profileService;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     @PostMapping("/create")
     public ResponseEntity<String> createProfile(
@@ -59,6 +68,7 @@ public class ProfileController {
                     request.setAbout(profile.getAbout());
                     request.setEmail(profile.getEmail());
                     request.setImagePath("/api/profile/image/" + profile.getId());
+
 //                    request.setImageUrl("/api/profile/image/" + profile.getId()); // Set imageUrl
                     request.setImageUrl(profileService.getImageUrl(profile));
                     return request;
@@ -70,15 +80,38 @@ public class ProfileController {
 
 
 
-    @GetMapping("image/{profileId}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String profileId) {
+//    @GetMapping("image/{profileId}")
+//    public ResponseEntity<byte[]> getImage(@PathVariable String profileId) {
+//        byte[] imageBytes = profileService.getImageBytes(profileId);
+//        if (imageBytes != null) {
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.IMAGE_PNG); // Adjust the media type based on your image type
+//            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
+
+    @GetMapping("/image/{profileId}")
+    public ResponseEntity<Resource> getImage(@PathVariable String profileId) throws IOException {
         byte[] imageBytes = profileService.getImageBytes(profileId);
         if (imageBytes != null) {
+//            Path imagePath = Paths.get("src/main/resources/static/images/" + profileId); // Adjust the path accordingly
+            Path imagePath = Paths.get("src/main/resources/static/" + profileId);
+
+            Resource resource = new UrlResource(imagePath.toUri());
+
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_PNG); // Adjust the media type based on your image type
-            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+            headers.setContentType(MediaType.IMAGE_PNG);
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(resource);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
+
 }
