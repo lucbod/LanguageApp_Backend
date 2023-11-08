@@ -31,6 +31,28 @@ public class ProfileController {
     @Autowired
     private ResourceLoader resourceLoader;
 
+    // works with file upload
+//    @PostMapping("/create")
+//    public ResponseEntity<String> createProfile(
+//            @RequestHeader("Authorization") String token,
+//            @RequestParam(value = "image", required = false) MultipartFile file,
+//            @ModelAttribute ProfileRequest profileRequest) {
+//
+//        // You should validate the token here using your authentication mechanism
+//        // For simplicity, let's assume the token is valid
+//
+//        // Handle profile picture upload if the file is present
+//        if (file != null) {
+//            String imagePath = profileService.saveProfilePicture(file);
+//            profileRequest.setImagePath(imagePath);
+//        }
+//
+//        // Now you can save the profile information to MongoDB using a service
+//        profileService.saveProfile(profileRequest);
+//
+//        return ResponseEntity.ok("Profile created successfully");
+//    }
+
     @PostMapping("/create")
     public ResponseEntity<String> createProfile(
             @RequestHeader("Authorization") String token,
@@ -44,6 +66,9 @@ public class ProfileController {
         if (file != null) {
             String imagePath = profileService.saveProfilePicture(file);
             profileRequest.setImagePath(imagePath);
+        } else {
+            // No file provided, set the external link for the default image
+            profileRequest.setImagePath("https://cdn.pixabay.com/photo/2015/06/02/12/59/book-794978_1280.jpg");  // Replace with the actual external link
         }
 
         // Now you can save the profile information to MongoDB using a service
@@ -51,6 +76,7 @@ public class ProfileController {
 
         return ResponseEntity.ok("Profile created successfully");
     }
+
 
 //    @GetMapping
 //    public List<Profile> getAllProfiles() {

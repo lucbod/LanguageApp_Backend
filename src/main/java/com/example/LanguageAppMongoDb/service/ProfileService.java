@@ -39,10 +39,56 @@ public class ProfileService {
 
         profileRepository.save(profile);
     }
+// works with file upload
+//    public String saveProfilePicture(MultipartFile file) {
+//        // !!!!!! good stuff
+//         // Retrieve authenticated user from security context
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User user = (User) authentication.getPrincipal();
+//
+//        String userId = user.getId();
+//
+//        // Define the directory where you want to save the pictures
+//        String uploadDir = "src/main/resources/static/images"; // Update this with your actual path
+//
+//        // Create a Path representing the directory
+//        Path uploadPath = Paths.get(uploadDir);
+//
+//        // Ensure the directory exists, if not, create it
+//        if (!Files.exists(uploadPath)) {
+//            try {
+//                Files.createDirectories(uploadPath);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                // Handle the exception appropriately
+//            }
+//        }
+//
+//        // Generate a unique filename (you might want to use user ID or something)
+//        String fileName = userId + "_" + file.getOriginalFilename();
+////        System.out.println("filename" + fileName);
+//
+//        // Create the Path for the file
+//        Path filePath = uploadPath.resolve(fileName);
+////        System.out.println("filepath" + filePath);
+//
+//        try {
+//            // Save the file to the specified path
+//            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            // Handle the exception appropriately
+//        }
+//        return userId + "_" + file.getOriginalFilename();
+//    }
 
     public String saveProfilePicture(MultipartFile file) {
-        // !!!!!! good stuff
-         // Retrieve authenticated user from security context
+        if (file == null) {
+            // No file provided, return the external link for the default image
+            return "https://cdn.pixabay.com/photo/2015/06/02/12/59/book-794978_1280.jpg";  // Replace with the actual external link
+        }
+
+        // Retrieve authenticated user from security context
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
@@ -66,11 +112,9 @@ public class ProfileService {
 
         // Generate a unique filename (you might want to use user ID or something)
         String fileName = userId + "_" + file.getOriginalFilename();
-//        System.out.println("filename" + fileName);
 
         // Create the Path for the file
         Path filePath = uploadPath.resolve(fileName);
-//        System.out.println("filepath" + filePath);
 
         try {
             // Save the file to the specified path
@@ -79,8 +123,11 @@ public class ProfileService {
             e.printStackTrace();
             // Handle the exception appropriately
         }
+
         return userId + "_" + file.getOriginalFilename();
     }
+
+
     public List<Profile> getAllProfiles() {
         return profileRepository.findAll();
     }
