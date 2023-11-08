@@ -83,9 +83,36 @@ public class ProfileController {
 //        return profileService.getAllProfiles();
 //    }
 
+    @GetMapping("/languages")
+    public ResponseEntity<List<String>> getDistinctLanguages() {
+        List<String> languages = profileService.getDistinctLanguages();
+        return ResponseEntity.ok(languages);
+    }
+//    @GetMapping
+//    public ResponseEntity<List<ProfileRequest>> getAllProfiles() {
+//        List<ProfileRequest> profiles = profileService.getAllProfiles().stream()
+//                .map(profile -> {
+//                    ProfileRequest request = new ProfileRequest();
+//                    request.setName(profile.getName());
+//                    request.setNativeLanguage(profile.getNativeLanguage());
+//                    request.setLanguageToLearn(profile.getLanguageToLearn());
+//                    request.setAbout(profile.getAbout());
+//                    request.setEmail(profile.getEmail());
+//                    request.setImagePath("/api/profile/image/" + profile.getId());
+//
+////                    request.setImageUrl("/api/profile/image/" + profile.getId()); // Set imageUrl
+//                    request.setImageUrl(profileService.getImageUrl(profile));
+//                    return request;
+//                })
+//                .collect(Collectors.toList());
+//
+//        return ResponseEntity.ok(profiles);
+//    }
+
     @GetMapping
-    public ResponseEntity<List<ProfileRequest>> getAllProfiles() {
-        List<ProfileRequest> profiles = profileService.getAllProfiles().stream()
+    public ResponseEntity<List<ProfileRequest>> getAllProfiles(
+            @RequestParam(required = false) String languageToLearn) {
+        List<ProfileRequest> profiles = profileService.getAllProfiles(languageToLearn).stream()
                 .map(profile -> {
                     ProfileRequest request = new ProfileRequest();
                     request.setName(profile.getName());
@@ -94,8 +121,6 @@ public class ProfileController {
                     request.setAbout(profile.getAbout());
                     request.setEmail(profile.getEmail());
                     request.setImagePath("/api/profile/image/" + profile.getId());
-
-//                    request.setImageUrl("/api/profile/image/" + profile.getId()); // Set imageUrl
                     request.setImageUrl(profileService.getImageUrl(profile));
                     return request;
                 })
@@ -103,7 +128,6 @@ public class ProfileController {
 
         return ResponseEntity.ok(profiles);
     }
-
 
 
 //    @GetMapping("image/{profileId}")

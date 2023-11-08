@@ -5,6 +5,7 @@ import com.example.LanguageAppMongoDb.model.users.User;
 import com.example.LanguageAppMongoDb.repository.ProfileRepository;
 import com.example.LanguageAppMongoDb.resource.ProfileRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,10 @@ public class ProfileService {
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
 
     public void saveProfile(ProfileRequest profileRequest) {
         Profile profile = Profile.builder()
@@ -128,9 +134,14 @@ public class ProfileService {
     }
 
 
-    public List<Profile> getAllProfiles() {
-        return profileRepository.findAll();
+    public List<Profile> getAllProfiles(String languageToLearn) {
+        if (StringUtils.isEmpty(languageToLearn)) {
+            return profileRepository.findAll();
+        } else {
+            return profileRepository.findByLanguageToLearn(languageToLearn);
+        }
     }
+
 
     public byte[] getImageBytes(String profileId) {
         Optional<Profile> optionalProfile = profileRepository.findById(profileId);
@@ -158,10 +169,16 @@ public class ProfileService {
         System.out.println("UserID is: " + userId);
 
 //        String fileName = userId + "_" + profile.getImagePath(); // Adjust as per your actual attributes
-                String fileName = profile.getImagePath(); // Adjust as per your actual attributes
+        String fileName = profile.getImagePath(); // Adjust as per your actual attributes
         System.out.println("fileName is " + profile.getImagePath());
 
         System.out.println("filename is" + fileName);
         return "/api/profile/image/" + fileName;
+    }
+
+    public List<String> getDistinctLanguages() {
+        return mongoTemplate.getCollection("profile")
+                .distinct("languageToLearn", String.class)
+                .into(new ArrayList<>());
     }
 }
