@@ -1,5 +1,6 @@
 package com.example.LanguageAppMongoDb.auth;
 
+import ch.qos.logback.classic.encoder.JsonEncoder;
 import com.example.LanguageAppMongoDb.config.JwtService;
 import com.example.LanguageAppMongoDb.model.users.Role;
 import com.example.LanguageAppMongoDb.model.users.User;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,9 @@ public class AuthenticationService {
 
     @Autowired
     private AccessTokenService accessTokenService;
+
+    @Autowired
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
 
@@ -77,6 +82,11 @@ public class AuthenticationService {
             accessToken.setToken(jwtToken);
             accessToken.setExpiryDate(expiryDate); // set your expiry date here;
             accessToken.setUserEmail(user.getEmail());
+
+            // hashing token
+            String hashedToken = bCryptPasswordEncoder.encode(accessToken.getToken());
+            accessToken.setToken(hashedToken);
+
             accessTokenService.saveAccessToken(accessToken);
 
             return AuthenticationResponse.builder()
