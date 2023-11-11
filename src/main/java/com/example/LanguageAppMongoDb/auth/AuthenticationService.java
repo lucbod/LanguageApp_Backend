@@ -5,6 +5,8 @@ import com.example.LanguageAppMongoDb.config.JwtService;
 import com.example.LanguageAppMongoDb.model.users.Role;
 import com.example.LanguageAppMongoDb.model.users.User;
 import com.example.LanguageAppMongoDb.model.verification.AccessToken;
+import com.example.LanguageAppMongoDb.model.verification.TokenType;
+import com.example.LanguageAppMongoDb.repository.AccessTokenRepository;
 import com.example.LanguageAppMongoDb.repository.UserRepository;
 import com.example.LanguageAppMongoDb.service.AccessTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,12 +30,16 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
 
     private final UserRepository repository;
+
+    private final AccessTokenRepository accessTokenRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -91,17 +97,31 @@ public class AuthenticationService {
             // setting expiration time
             Date expiryDate = new Date(System.currentTimeMillis() + EXPIRATION_TIME);
 
+            // first revoke then save
+            revokeAllUserTokens(user);
+            System.out.println("auth revoked succ");
+
             // Save the access token to the AccessToken collection
             AccessToken accessToken = new AccessToken();
             accessToken.setToken(jwtToken);
             accessToken.setExpiryDate(expiryDate); // set your expiry date here;
             accessToken.setUserEmail(user.getEmail());
+            accessToken.setRevoked(false);
+            accessToken.setExpired(false);
+            accessToken.setTokenType(TokenType.ACCESS_TOKEN);
 
             // hashing token
             String hashedToken = bCryptPasswordEncoder.encode(accessToken.getToken());
             accessToken.setToken(hashedToken);
 
-            accessTokenService.saveAccessToken(accessToken);
+
+            try{
+                accessTokenService.saveAccessToken(accessToken);
+                System.out.println("Token updated: " + accessToken.getToken());
+            } catch (Exception e){
+                System.out.println("Error saving token "+ e.getMessage());
+                e.printStackTrace();
+            }
 
             return AuthenticationResponse.builder()
                     .accessToken(jwtToken)
@@ -132,18 +152,41 @@ public class AuthenticationService {
             if(jwtService.isTokenValid(refreshToken, user)) {
                 System.out.println("RefreshToken is valid.");
                 var accessToken = jwtService.generateToken(user);
-                // TO DO by logout
-//                revokeAllUserTokens(user);
-//                saveUserToken(user,accessToken);
+
+                revokeAllUserTokens(user);
+
                 var authResponse = AuthenticationResponse.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
 
+                System.out.println("User tokens updated successfully.");
+
             }}
     }
 
     private void revokeAllUserTokens(User user) {
+        List<AccessToken> validUserTokens = accessTokenRepository.findAllValidTokenByUserEmail(user.getEmail());
+
+        if (validUserTokens.isEmpty())
+            return;
+
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+
+        try {
+            // Save all tokens using saveAll
+            List<AccessToken> savedTokens = accessTokenRepository.saveAll(validUserTokens);
+
+            // Log the saved tokens to check if they have been updated
+            savedTokens.forEach(savedToken -> {
+                System.out.println("Saved token - Revoked: " + savedToken.isRevoked() + ", Expired: " + savedToken.isExpired());
+            });
+        } catch (Exception e) {
+            System.out.println("Error by expiration and revoke " + e.getMessage());
+        }
     }
 }
