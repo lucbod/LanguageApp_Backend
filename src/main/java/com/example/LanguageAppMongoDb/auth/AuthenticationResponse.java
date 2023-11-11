@@ -18,4 +18,7 @@ public class AuthenticationResponse {
 
     @JsonProperty("refresh_Token")
     private String refreshToken;
+
+    private String error;
+
 }

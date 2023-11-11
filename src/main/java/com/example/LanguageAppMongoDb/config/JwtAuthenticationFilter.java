@@ -1,5 +1,6 @@
 package com.example.LanguageAppMongoDb.config;
 
+import com.example.LanguageAppMongoDb.repository.AccessTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+    private final AccessTokenRepository accessTokenRepository;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -44,7 +47,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(userEmail!=null && SecurityContextHolder.getContext().getAuthentication() == null){
             System.out.println("Validating JWT and authenticating user: " + userEmail);
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            if(jwtService.isTokenValid(jwt, userDetails)){
+            // revoked or expired tokens won't work
+            var isTokenValid = accessTokenRepository.findByToken(jwt)
+                    .map(t-> !t.isExpired() && !t.isRevoked())
+                    .orElse(false);
+            if(jwtService.isTokenValid(jwt, userDetails) && isTokenValid){
                 System.out.println("JWT is valid. Creating authentication token.");
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

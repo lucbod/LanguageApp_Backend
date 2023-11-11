@@ -3,6 +3,7 @@ package com.example.LanguageAppMongoDb.auth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,12 +27,26 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.register(request));
     }
 
+//    @PostMapping("/authenticate")
+//    public ResponseEntity<AuthenticationResponse> authenticate(
+//            @RequestBody AuthenticationRequest request
+//    ){
+//        return ResponseEntity.ok(service.authenticate(request));
+//    }
+
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
-    ){
-        return ResponseEntity.ok(service.authenticate(request));
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+        try {
+            return ResponseEntity.ok(service.authenticate(request));
+        } catch (CustomAuthenticationException e) {
+            AuthenticationResponse response = AuthenticationResponse.builder()
+                    .error("Invalid credentials")
+                    .build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
     }
+
+
 
     @PostMapping("/refresh-token")
     public void refreshToken(

@@ -74,7 +74,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) throws CustomAuthenticationException {
         try {
             System.out.println("Attempting authentication for email: " + request.getEmail());
             authenticationManager.authenticate(
@@ -110,9 +110,9 @@ public class AuthenticationService {
             accessToken.setExpired(false);
             accessToken.setTokenType(TokenType.ACCESS_TOKEN);
 
-            // hashing token
-            String hashedToken = bCryptPasswordEncoder.encode(accessToken.getToken());
-            accessToken.setToken(hashedToken);
+//            // hashing token
+//            String hashedToken = bCryptPasswordEncoder.encode(accessToken.getToken());
+//            accessToken.setToken(hashedToken);
 
 
             try{
@@ -131,7 +131,8 @@ public class AuthenticationService {
         } catch (AuthenticationException e) {
             System.out.println("Authentication failed for email: " + request.getEmail());
             e.printStackTrace(); // Add this line to print the stack trace
-            throw e; // Rethrow the exception to propagate it
+//            throw e; // Rethrow the exception to propagate it
+            throw new CustomAuthenticationException("Invalid credentials: ", e);
         }
     }
 
