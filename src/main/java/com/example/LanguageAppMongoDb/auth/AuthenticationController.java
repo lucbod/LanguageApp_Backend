@@ -69,7 +69,6 @@ public class AuthenticationController {
 
     @PostMapping("/logout")
     public String performLogout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
-        // .. perform logout
         this.logoutService.logout(request, response, authentication);
         return "Logout successful";
     }
