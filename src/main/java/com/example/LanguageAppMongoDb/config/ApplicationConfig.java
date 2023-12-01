@@ -9,11 +9,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
@@ -37,14 +43,37 @@ public class ApplicationConfig {
 //        };
 //    }
 
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        return username -> {
+//            System.out.println("Loading user details for username: " + username);
+//            User user = repository.findByEmail(username)
+//                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//            System.out.println("Loaded user details: " + user);
+//            return (UserDetails) user;
+//        };
+//    }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
             System.out.println("Loading user details for username: " + username);
             User user = repository.findByEmail(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            System.out.println("Loaded user details: " + user);
-            return (UserDetails) user;
+
+            // Extract roles from the 'role' field
+            List<GrantedAuthority> authorities = Collections.singletonList(
+                    new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+            );
+
+            System.out.println("User roles: " + authorities);
+
+            // Return UserDetails with username, password, and roles
+            return new org.springframework.security.core.userdetails.User(
+                    user.getEmail(),
+                    user.getPassword(),
+                    authorities
+            );
         };
     }
 

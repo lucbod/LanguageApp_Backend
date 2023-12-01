@@ -1,5 +1,6 @@
 package com.example.LanguageAppMongoDb.config;
 
+import com.example.LanguageAppMongoDb.model.users.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -38,9 +40,25 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails){
-        return generateToken(new HashMap<>(), userDetails);
+//    public String generateToken(UserDetails userDetails){
+//        return generateToken(new HashMap<>(), userDetails);
+//    }
+
+    public String generateToken(UserDetails userDetails) {
+        if (userDetails instanceof User) {
+            // Add roles as claims to the JWT
+            String roles = ((User) userDetails).getRole().name();
+
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("roles", roles);
+
+            return generateToken(claims, userDetails);
+        } else {
+            throw new IllegalArgumentException("UserDetails must be an instance of User class");
+        }
     }
+
+
 
     public String generateToken(
             Map<String, Object> extraClaims,
