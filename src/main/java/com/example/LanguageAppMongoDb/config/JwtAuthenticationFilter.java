@@ -34,16 +34,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
+
+        if (request.getServletPath().contains("/api/v1/auth")||
+        request.getServletPath().contains("/swagger-ui")||
+        request.getServletPath().contains("/v3/api-docs")){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
+
         if(authHeader ==null ||! authHeader.startsWith("Bearer")){
             System.out.println("AuthFilter: No Bearer token found. Skipping authentication.");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
             filterChain.doFilter(request,response);
             return;
         }
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUserName(jwt);
+
         if(userEmail!=null && SecurityContextHolder.getContext().getAuthentication() == null){
             System.out.println("Validating JWT and authenticating user: " + userEmail);
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
@@ -82,6 +93,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } else {
             System.out.println("User already authenticated or userEmail is null.");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+            return;
         }
         filterChain.doFilter(request, response);
     }
