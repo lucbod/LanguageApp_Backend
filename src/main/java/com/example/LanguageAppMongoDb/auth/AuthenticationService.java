@@ -141,7 +141,7 @@ public class AuthenticationService {
         final String refreshToken;
         final String userEmail;
         if(authHeader ==null ||! authHeader.startsWith("Bearer")){
-            System.out.println("No Bearer token found. Skipping authentication.");
+            System.out.println("RefreshToken: No Bearer token found. Skipping authentication.");
             return;
         }
         refreshToken = authHeader.substring(7);

@@ -22,7 +22,7 @@ public class LogoutService implements LogoutHandler {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         if(authHeader ==null ||! authHeader.startsWith("Bearer")){
-            System.out.println("No Bearer token found. Skipping authentication.");
+            System.out.println("Logout: No Bearer token found. Skipping authentication.");
             return;
         }
         jwt = authHeader.substring(7);
