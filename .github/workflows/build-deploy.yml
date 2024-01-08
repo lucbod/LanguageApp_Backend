@@ -24,3 +24,8 @@ jobs:
           distribution: 'adopt'
           java-version: '17'
           maven-version: '3.9.6'
+
+      - name: Print Java and Maven Versions
+        run: |
+          echo "Java Version: $(java -version)"
+          echo "Maven Version: $(mvn -v)
