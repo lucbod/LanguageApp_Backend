@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class testEndpointForUsersController {
 
     @GetMapping
-    @Secured("ROLE_USER")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<String> sayHello(){
-        return ResponseEntity.ok("Hello from public endpoint");
+        return ResponseEntity.ok("Hello from secured endpoint");
     }
 }
