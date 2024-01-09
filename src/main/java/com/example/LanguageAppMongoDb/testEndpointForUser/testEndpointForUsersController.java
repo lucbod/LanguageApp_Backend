@@ -14,6 +14,6 @@ public class testEndpointForUsersController {
     @GetMapping
     @Secured("ROLE_ADMIN")
     public ResponseEntity<String> sayHello(){
-        return ResponseEntity.ok("Hello from secured endpoint");
+        return ResponseEntity.ok("Hi from secured endpoint");
     }
 }
