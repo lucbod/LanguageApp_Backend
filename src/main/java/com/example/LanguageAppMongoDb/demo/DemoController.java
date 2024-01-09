@@ -17,6 +17,6 @@ public class DemoController {
     @GetMapping
     @Secured("ROLE_ADMIN")
     public ResponseEntity<String>sayHello(){
-        return ResponseEntity.ok("Hello from secured endpoint.This is a context path:"+ contextPath);
+        return ResponseEntity.ok("Hi from secured endpoint.This is a context path:"+ contextPath);
     }
 }
