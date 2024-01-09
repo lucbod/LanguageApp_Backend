@@ -19,4 +19,10 @@ public class DemoController {
     public ResponseEntity<String>sayHello(){
         return ResponseEntity.ok("Hey from secured endpoint.This is a context path:"+ contextPath);
     }
+
+    // New endpoint for testing purposes
+    @GetMapping("/test")
+    public ResponseEntity<String> testEndpoint() {
+        return ResponseEntity.ok("Testing endpoint. This is a context path:" + contextPath);
+    }
 }
