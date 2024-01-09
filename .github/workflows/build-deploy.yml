@@ -24,7 +24,7 @@ jobs:
           echo "Java Version: $(java -version)"
           echo "Maven Version: $(mvn -v)"
 
-          - name: Deploy to production
+      - name: Deploy to production
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
           service-id: ${{ secrets.RENDER_SERVICE_ID }}
