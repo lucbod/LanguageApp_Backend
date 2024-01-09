@@ -24,9 +24,9 @@ jobs:
           echo "Java Version: $(java -version)"
           echo "Maven Version: $(mvn -v)"
 
-      - name: Deploy to Render
-        run: |
-          chmod +x render.sh  # Ensure the script is executable
-          ./render.sh
-        env:
-          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          - name: Deploy to production
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          wait-for-success: true
