@@ -7,4 +7,4 @@ SERVICE_NAME="Spring Boot LanguageApp"
 mvn clean install
 
 # Deploy to Render using deploy hook
-render deploy-hook --from ./target/LanguageAppMongoDb-0.0.1-SNAPSHOT.jar --config render.yaml $SERVICE_NAME
+render deploy-hook --from ./target/LanguageAppMongoDb-0.0.1-SNAPSHOT.jar $SERVICE_NAME
