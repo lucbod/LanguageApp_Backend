@@ -28,3 +28,5 @@ jobs:
         run: |
           chmod +x render.sh  # Ensure the script is executable
           ./render.sh
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}

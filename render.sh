@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Set the Render service name (replace YOUR_SERVICE_NAME with your service name)
-SERVICE_NAME="Spring Boot LanguageApp"
+# Set the Render deploy hook URL
+RENDER_DEPLOY_HOOK_URL=$1
 
 # Build your project (replace the build command with your actual build command)
 mvn clean install
 
-# Deploy to Render using deploy hook
-render deploy-hook --from ./target/LanguageAppMongoDb-0.0.1-SNAPSHOT.jar $SERVICE_NAME
+# Trigger Render deployment using curl with the secret
+curl -X POST $RENDER_DEPLOY_HOOK_URL
