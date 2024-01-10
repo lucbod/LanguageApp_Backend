@@ -33,5 +33,6 @@ build/
 .vscode/
 
 ### Spring Boot ###
-/src/main/resources/application.properties
+## file can be exposed, since keys and psswds are now hidden
+#/src/main/resources/application.properties
 
