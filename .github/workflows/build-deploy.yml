@@ -26,8 +26,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/lucbod/languageApp_Backend:latest .
-          docker push ghcr.io/lucbod/languageApp_Backend:latest  
+          docker build -t ghcr.io/lucbod/languageapp_backend:latest .
+          docker push ghcr.io/lucbod/languageapp_backend:latest  
 
       - name: Deploy to production
         uses: johnbeynon/render-deploy-action@v0.0.8
