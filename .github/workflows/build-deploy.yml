@@ -24,6 +24,11 @@ jobs:
           echo "Java Version: $(java -version)"
           echo "Maven Version: $(mvn -v)"
 
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/lucbod/LanguageApp_Backend:latest .
+          docker push ghcr.io/lucbod/LanguageApp_Backend:latest  
+
       - name: Deploy to production
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
