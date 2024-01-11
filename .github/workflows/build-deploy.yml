@@ -35,3 +35,4 @@ jobs:
           service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
           api-key: ${{ secrets.MY_RENDER_API_KEY }}
           wait-for-success: true
+          registry-secret: ${{ secrets.CR_PAT }}
