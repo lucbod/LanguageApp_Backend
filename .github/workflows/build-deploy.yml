@@ -24,6 +24,9 @@ jobs:
           echo "Java Version: $(java -version)"
           echo "Maven Version: $(mvn -v)"
 
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.CR_PAT_PROD }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
       - name: Build Docker image
         run: |
           docker build -t ghcr.io/lucbod/languageapp_backend:latest .
@@ -35,6 +38,4 @@ jobs:
           service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
           api-key: ${{ secrets.MY_RENDER_API_KEY }}
           wait-for-success: true
-          registry-secret: ${{ secrets.CR_PAT }}
-
-#comment to rerun job
+          registry-secret: ${{ secrets.CR_PAT_PROD }}
