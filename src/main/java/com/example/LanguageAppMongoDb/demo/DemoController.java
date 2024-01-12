@@ -23,6 +23,6 @@ public class DemoController {
     // New endpoint for testing purposes
     @GetMapping("/test")
     public ResponseEntity<String> testEndpoint() {
-        return ResponseEntity.ok("This is a GREAT testing endpoint.......This is a context path:" + contextPath);
+        return ResponseEntity.ok("This is a GREAT testing endpoint.This is a context path:" + contextPath);
     }
 }
