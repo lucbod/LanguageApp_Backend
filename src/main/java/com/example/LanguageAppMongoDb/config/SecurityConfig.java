@@ -78,13 +78,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(
-                                "/api/v1/auth/**",
+                                "/api/v1/auth/register",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**")
                         .permitAll()
-                        .requestMatchers("/api/v1/demo-controller").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/test-controller").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/demo-controller", "/api/v1/test-controller").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
